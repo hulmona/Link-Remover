@@ -1,9 +1,12 @@
-from pyrogram import Client, filters
+import os
 import asyncio
+from pyrogram import Client, filters
+from flask import Flask
+from threading import Thread
 
-api_id = 38438389
-api_hash = "YOUR_API_HASH"
-bot_token = "YOUR_BOT_TOKEN"
+api_id = int(os.getenv("API_ID"))
+api_hash = os.getenv("API_HASH")
+bot_token = os.getenv("BOT_TOKEN")
 
 app = Client(
     "MUHyperlinkRemoverBot",
@@ -32,4 +35,19 @@ async def remove_links(client, message):
         except:
             pass
 
+
+# -------- Web server (Render এর জন্য) --------
+
+web = Flask(__name__)
+
+@web.route("/")
+def home():
+    return "Bot is running!"
+
+def run():
+    web.run(host="0.0.0.0", port=10000)
+
+Thread(target=run).start()
+
+# -------- Start bot --------
 app.run()
